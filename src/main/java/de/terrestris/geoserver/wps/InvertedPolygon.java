@@ -1,9 +1,8 @@
 package de.terrestris.geoserver.wps;
 
 import org.geoserver.wps.gs.GeoServerProcess;
-import org.geoserver.wps.process.RawData;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.process.factory.DescribeParameter;
@@ -38,15 +37,14 @@ public class InvertedPolygon implements GeoServerProcess {
     @DescribeParameter(
       name = "inputFeatures",
       description = "The input features"
-    ) RawData inputFeatures
+    ) FeatureCollection<?, ?> inputFeatures
   ) {
-    FeatureJSON reader = new FeatureJSON();
     GeometryJSON writer = new GeometryJSON();
     try {
       CoordinateReferenceSystem source = CRS.decode("EPSG:4326");
       CoordinateReferenceSystem target = CRS.decode("EPSG:3857");
       MathTransform transform = CRS.findMathTransform(source, target);
-      FeatureIterator<?> collection = reader.readFeatureCollection(inputFeatures.getInputStream()).features();
+      FeatureIterator<?> collection = inputFeatures.features();
       GeometryFactory factory = new GeometryFactory();
       Envelope envelope = new Envelope(-20000000d, 20000000d, -20000000d, 20000000d);
       Geometry polygon = factory.toGeometry(envelope);
