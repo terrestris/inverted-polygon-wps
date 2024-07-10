@@ -5,13 +5,14 @@
   <groupId>de.terrestris.geoserver.wps</groupId>
   <artifactId>inverted-polygon-wps</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.9-SNAPSHOT</version>
+  <version>0.1.0</version>
   <name>WPS process to calculate an inverted polygon</name>
 
   <scm>
     <url>https://github.com/terrestris/inverted-polygon-wps</url>
     <connection>scm:git:git@github.com:terrestris/inverted-polygon-wps.git</connection>
     <developerConnection>scm:git:git@github.com:terrestris/inverted-polygon-wps.git</developerConnection>
+    <tag>v0.1.0</tag>
   </scm>
 
   <repositories>
