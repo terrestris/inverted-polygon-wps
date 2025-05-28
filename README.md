@@ -12,13 +12,31 @@ The resulting geometry will then be output as a GeoJSON geometry and be provided
 
 Download the latest version from [here](https://nexus.terrestris.de/#browse/browse:public:de%2Fterrestris%2Fgeoserver%2Fwps%2Finverted-polygon-wps).
 
-## Installation ##
+## Installation in GeoServer Cloud
 
-Simply copy the WPS into the `WEB-INF/lib` directory where GeoServer
-is deployed.
+GeoServer Cloud is distributed as Docker images with a pre-configured set of extensions.
+In order to install an additional extension, you need to mount the required resources, such
+as jar files, in the running containers and instruct the java launcher to use them.
+
+In docker-compose it'd be as easy as bind-mounting the WPS `myWPS.jar`
+on the wps container's `/opt/app/bin/BOOT-INF/lib/myWPS.jar`, but trying
+to do the same in Kubernetes would override all jars in that folder.
+
+The recommended way is to mount the jar files somewhere else
+(for example, in `/opt/app/plugins/`) and set the `JAVA_OPTS` environment variable to
+include this location, like in the following example:
+
+```
+  wps:
+    image: geoservercloud/geoserver-cloud-wps:1.1.0
+    environment:
+      JAVA_OPTS: "-cp /opt/app/bin:/opt/app/bin/BOOT-INF/lib/*:/opt/app/plugins/myWPS.jar"
+    volumes:
+      - ./myWPS.jar:/opt/app/plugins/myWPS.jar
+```
 
 ## cURL example:
-`curl -X POST -F 'file=@req.xml' 'http://localhost:8080/geoserver/ows'`
+`curl -X POST -H "Content-Type: application/xml" --data-binary @req.xml http://localhost:9090/geoserver/wps`
 
 Contents of `req.xml`:
 ```
