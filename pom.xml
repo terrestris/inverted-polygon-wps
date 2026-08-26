@@ -49,6 +49,8 @@
     <geoserver.version>2.28.5</geoserver.version>
     <geotools.version>34.5</geotools.version>
 
+    <junit-jupiter.version>5.14.4</junit-jupiter.version>
+
     <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
     <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
@@ -127,6 +129,10 @@
             <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
             <doclint>none</doclint>
             <quiet>true</quiet>
+            <failOnError>false</failOnError>
+            <additionalJOption>--ignore-source-errors</additionalJOption>
+            <source>17</source>
+            <detectJavaApiLink>false</detectJavaApiLink>
           </configuration>
         </plugin>
         <plugin>
@@ -219,7 +225,6 @@
 
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.11.1</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -257,6 +262,10 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-geojson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
@@ -284,7 +293,12 @@
         <groupId>org.geotools</groupId>
         <artifactId>gt-geojson</artifactId>
         <version>${geotools.version}</version>
-        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
