@@ -5,7 +5,7 @@
   <groupId>de.terrestris.geoserver.wps</groupId>
   <artifactId>inverted-polygon-wps</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.1-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>WPS process to calculate an inverted polygon</name>
 
   <scm>
@@ -43,17 +43,26 @@
   </distributionManagement>
 
   <properties>
-    <geotools.version>32.4</geotools.version>
-    <geoserver.version>2.26.1</geoserver.version>
-
-    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-    <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
-
-    <jackson.version>2.13.0</jackson.version>
-    <kotlin.version>1.5.31</kotlin.version>
-
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <geoserver.version>2.28.5</geoserver.version>
+    <geotools.version>34.5</geotools.version>
+
+    <junit-jupiter.version>5.14.4</junit-jupiter.version>
+
+    <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
+    <maven-clean-plugin.version>3.5.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+    <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+    <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
+    <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.22.0</maven-site-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
   </properties>
 
   <build>
@@ -62,96 +71,136 @@
       <plugins>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>${maven-clean-plugin.version}</version>
+          <configuration>
+            <fast>true</fast>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <release>${maven.compiler.release}</release>
+            <encoding>${project.build.sourceEncoding}</encoding>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>3.1.4</version>
+          <version>${maven-deploy-plugin.version}</version>
+          <configuration>
+            <retryFailedDeploymentCount>3</retryFailedDeploymentCount>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${maven-enforcer-plugin.version}</version>
+          <configuration>
+            <rules>
+              <requireMavenVersion>
+                <version>3.9</version>
+              </requireMavenVersion>
+              <requireJavaVersion>
+                <version>17</version>
+              </requireJavaVersion>
+            </rules>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
-          <version>3.1.4</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>3.3.1</version>
+          <version>${maven-install-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.5.1</version>
+          <version>${maven-jar-plugin.version}</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              </manifest>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.22.0</version>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+            <doclint>none</doclint>
+            <quiet>true</quiet>
+            <failOnError>false</failOnError>
+            <additionalJOption>--ignore-source-errors</additionalJOption>
+            <source>17</source>
+            <detectJavaApiLink>false</detectJavaApiLink>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+          <configuration>
+            <preparationGoals>clean install</preparationGoals>
+            <goals>deploy</goals>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.5.0</version>
+          <version>${maven-resources-plugin.version}</version>
+          <configuration>
+            <encoding>${project.build.sourceEncoding}</encoding>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.5.6</version>
+          <version>${maven-surefire-plugin.version}</version>
+          <configuration>
+            <trimStackTrace>false</trimStackTrace>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven-assembly-plugin.version}</version>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <appendAssemblyId>false</appendAssemblyId>
+            <attach>true</attach>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
+
     <plugins>
       <plugin>
-        <groupId>org.jetbrains.dokka</groupId>
-        <artifactId>dokka-maven-plugin</artifactId>
-        <version>2.2.0</version>
+        <artifactId>maven-clean-plugin</artifactId>
         <executions>
           <execution>
-            <phase>pre-site</phase>
+            <id>auto-clean</id>
+            <phase>initialize</phase>
             <goals>
-              <goal>dokka</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>default-compile</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>default-testCompile</id>
-            <phase>none</phase>
-          </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-            </configuration>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>testCompile</goal>
+              <goal>clean</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven-assembly-plugin.version}</version>
-        <configuration>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-          <appendAssemblyId>false</appendAssemblyId>
-        </configuration>
         <executions>
           <execution>
             <id>make-assembly</id>
@@ -162,46 +211,38 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <preparationGoals>clean install</preparationGoals>
-          <goals>deploy</goals>
-        </configuration>
+        <artifactId>maven-install-plugin</artifactId>
       </plugin>
       <plugin>
+      <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.12.0</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
             </goals>
-            <configuration>
-              <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-              <doclint>none</doclint>
-            </configuration>
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.6.3</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
             <goals>
               <goal>enforce</goal>
             </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>3.5</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -212,21 +253,54 @@
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-process</artifactId>
-      <version>${geotools.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.geotools</groupId>
-      <artifactId>gt-geojson</artifactId>
-      <version>${geotools.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver.extension</groupId>
       <artifactId>gs-wps-core</artifactId>
-      <version>${geoserver.version}</version>
-      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-geojson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-platform-dependencies</artifactId>
+        <version>${geotools.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.geoserver.extension</groupId>
+        <artifactId>gs-wps-core</artifactId>
+        <version>${geoserver.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-process</artifactId>
+        <version>${geotools.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.geotools</groupId>
+        <artifactId>gt-geojson</artifactId>
+        <version>${geotools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>${junit-jupiter.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

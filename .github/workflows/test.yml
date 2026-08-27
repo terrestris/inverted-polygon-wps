@@ -1,0 +1,16 @@
+name: test and analyse
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'maven'
+      - run: mvn -B clean test install --no-transfer-progress
